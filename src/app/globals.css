@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  
+  --bg-primary: #FAF7F2;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FDFBF7;
+  
+  --sacred-gold: #D4AF37;
+  --sacred-gold-light: #F4E8C1;
+  --sacred-gold-dark: #A88618;
+  
+  --saffron-terracotta: #C85A32;
+  --saffron-light: #FDF2EE;
+  --saffron-dark: #973C1C;
+  
+  --temple-dark: #1C1917;
+  --temple-amber: #F59E0B;
+
+  --text-main: #292524;
+  --text-muted: #78716C;
+  --border-light: #E7E5E4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #12131A;
+    --bg-card: #1B1C26;
+    --bg-card-hover: #222431;
+    
+    --sacred-gold: #E5C158;
+    --sacred-gold-light: #3D351D;
+    --sacred-gold-dark: #F4E8C1;
+
+    --saffron-terracotta: #E06D44;
+    --saffron-light: #331A12;
+
+    --temple-dark: #FAF7F2;
+    --text-main: #F5F5F4;
+    --text-muted: #A8A29E;
+    --border-light: #2E3040;
+  }
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1, h2, h3, .font-serif-spiritual {
+  font-family: var(--font-heading);
+}
+
+/* Custom glowing pulse for map markers */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(212, 175, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+.marker-glow {
+  animation: pulse-glow 2s infinite;
+  border-radius: 50%;
+}
+
+/* Leaflet override fixes */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--border-light) !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-card) !important;
+}
+
+.leaflet-container {
+  font-family: var(--font-body) !important;
+  z-index: 1 !important;
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.dark .glass-panel {
+  background: rgba(27, 28, 38, 0.85);
+  border: 1px solid rgba(229, 193, 88, 0.2);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 3px;
+}
