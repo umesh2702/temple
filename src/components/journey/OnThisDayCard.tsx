@@ -16,6 +16,7 @@ export const OnThisDayCard: React.FC<OnThisDayCardProps> = ({ data }) => {
   if (!data) return null;
 
   const { visit, yearsAgo } = data;
+  const targetUrl = `/temples/${visit.templeId}#visit-${visit.id}`;
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-900 via-stone-900 to-amber-950 text-white p-6 sm:p-7 shadow-xl border border-amber-500/30">
@@ -49,7 +50,7 @@ export const OnThisDayCard: React.FC<OnThisDayCardProps> = ({ data }) => {
 
         {/* Action Button */}
         <Link
-          href={`/visit/${visit.id}`}
+          href={targetUrl}
           className="shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-stone-950 font-bold text-sm shadow-lg shadow-amber-500/20 hover:scale-105 transition-all"
         >
           <span>Relive this memory</span>

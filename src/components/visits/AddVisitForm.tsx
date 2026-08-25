@@ -45,13 +45,11 @@ export const AddVisitForm: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTemple, setSelectedTemple] = useState<Temple | null>(null);
 
-  // Custom temple modal state
   const [isCreatingCustomTemple, setIsCreatingCustomTemple] = useState(false);
   const [customTempleName, setCustomTempleName] = useState('');
   const [customCity, setCustomCity] = useState('');
   const [customState, setCustomState] = useState('');
 
-  // Visit form fields
   const [visitDate, setVisitDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
@@ -112,7 +110,6 @@ export const AddVisitForm: React.FC = () => {
     if (uploadedUrl) {
       setPhotos((prev) => [...prev, uploadedUrl]);
     } else {
-      // Fallback base64 preview if Supabase storage is unconfigured
       const reader = new FileReader();
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
@@ -425,7 +422,6 @@ export const AddVisitForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Photo Attachment (URL or Supabase Storage Upload) */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
               <Camera className="w-3.5 h-3.5 text-amber-600" /> Photos (Upload or Paste URL)
@@ -531,14 +527,12 @@ export const AddVisitForm: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-            {createdVisitId && (
-              <button
-                onClick={() => router.push(`/visit/${createdVisitId}`)}
-                className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm shadow-lg shadow-amber-500/30 transition-all"
-              >
-                View Memory Page
-              </button>
-            )}
+            <button
+              onClick={() => router.push(`/temples/${selectedTemple.id}${createdVisitId ? `#visit-${createdVisitId}` : ''}`)}
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm shadow-lg shadow-amber-500/30 transition-all"
+            >
+              View Temple Journey Page
+            </button>
 
             <button
               onClick={() => router.push('/map')}

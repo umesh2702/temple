@@ -12,12 +12,13 @@ interface MemoryCardProps {
 
 export const MemoryCard: React.FC<MemoryCardProps> = ({ visit }) => {
   const primaryPhoto = visit.photos[0] || visit.temple.imageUrl;
+  const targetUrl = `/temples/${visit.templeId}#visit-${visit.id}`;
 
   return (
     <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-stone-900 border border-amber-200/70 dark:border-amber-900/40 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col sm:flex-row">
       
       {/* Image Container */}
-      <div className="relative sm:w-2/5 h-48 sm:h-auto overflow-hidden shrink-0">
+      <Link href={targetUrl} className="relative sm:w-2/5 h-48 sm:h-auto overflow-hidden shrink-0 block">
         <SafeImage
           src={primaryPhoto}
           alt={visit.temple.name}
@@ -36,7 +37,7 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ visit }) => {
             <Camera className="w-3 h-3" /> +{visit.photos.length - 1}
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Content Container */}
       <div className="p-5 sm:w-3/5 flex flex-col justify-between">
@@ -50,9 +51,11 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ visit }) => {
             </span>
           </div>
 
-          <h3 className="font-serif text-lg font-bold text-stone-900 dark:text-amber-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug">
-            {visit.temple.name}
-          </h3>
+          <Link href={targetUrl}>
+            <h3 className="font-serif text-lg font-bold text-stone-900 dark:text-amber-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug">
+              {visit.temple.name}
+            </h3>
+          </Link>
 
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 flex items-center gap-1 font-medium">
             <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -77,10 +80,10 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ visit }) => {
           </div>
 
           <Link
-            href={`/visit/${visit.id}`}
+            href={targetUrl}
             className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
           >
-            <span>Read Memory</span>
+            <span>View Journey</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>

@@ -55,6 +55,11 @@ export async function getTemplesService(): Promise<Temple[]> {
   }
 }
 
+export async function getTempleByIdService(templeId: string): Promise<Temple | null> {
+  const temples = await getTemplesService();
+  return temples.find((t) => t.id === templeId) || null;
+}
+
 export async function addCustomTempleService(
   templeData: Omit<Temple, 'id' | 'createdAt'>
 ): Promise<Temple> {
@@ -232,7 +237,6 @@ export async function addVisitService(
 
     if (error || !data) throw error;
 
-    // Handle photo attachments
     if (visitData.photos && visitData.photos.length > 0) {
       const photoRecords = visitData.photos.map((url) => ({
         visit_id: data.id,
@@ -273,7 +277,6 @@ export async function addVisitService(
   }
 }
 
-// --- PHOTO UPLOAD TO SUPABASE STORAGE ---
 export async function uploadVisitPhotoService(file: File): Promise<string | null> {
   if (!isSupabaseConfigured()) return null;
 
@@ -295,6 +298,59 @@ export async function uploadVisitPhotoService(file: File): Promise<string | null
     console.error('Error uploading photo to Supabase storage', e);
     return null;
   }
+}
+
+// --- TEMPLE JOURNEY SPECIFIC DATA SERVICE ---
+export interface TempleJourneyData {
+  temple: Temple;
+  visits: TempleVisitWithDetails[];
+  stats: {
+    totalVisits: number;
+    totalMemories: number;
+    firstVisitDate: string | null;
+    latestVisitDate: string | null;
+    yearsOfJourney: number;
+  };
+}
+
+export async function getTempleJourneyDataService(
+  templeId: string
+): Promise<TempleJourneyData | null> {
+  const temple = await getTempleByIdService(templeId);
+  if (!temple) return null;
+
+  const allVisits = await getVisitsService();
+  const templeVisits = allVisits
+    .filter((v) => v.templeId === templeId)
+    .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
+
+  const totalVisits = templeVisits.length;
+  const totalMemories = templeVisits.length;
+
+  let firstVisitDate: string | null = null;
+  let latestVisitDate: string | null = null;
+  let yearsOfJourney = 0;
+
+  if (totalVisits > 0) {
+    latestVisitDate = templeVisits[0].visitDate;
+    firstVisitDate = templeVisits[totalVisits - 1].visitDate;
+
+    const firstYear = new Date(firstVisitDate).getFullYear();
+    const latestYear = new Date(latestVisitDate).getFullYear();
+    yearsOfJourney = Math.max(1, latestYear - firstYear + 1);
+  }
+
+  return {
+    temple,
+    visits: templeVisits,
+    stats: {
+      totalVisits,
+      totalMemories,
+      firstVisitDate,
+      latestVisitDate,
+      yearsOfJourney,
+    },
+  };
 }
 
 // --- STATS CALCULATION HELPER ---

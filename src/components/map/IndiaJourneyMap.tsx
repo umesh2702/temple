@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Temple, TempleVisitWithDetails } from '@/types';
-import { MapPin, Calendar, Users, ChevronRight, Filter, Sparkles, Plus } from 'lucide-react';
+import { MapPin, ChevronRight, Sparkles, Plus } from 'lucide-react';
 import Link from 'next/link';
 
 interface IndiaJourneyMapProps {
@@ -15,7 +15,6 @@ interface IndiaJourneyMapProps {
   selectedCategoryFilter?: string;
 }
 
-// Custom Leaflet Icons Generator
 const createCustomIcon = (isVisited: boolean, visitCount: number) => {
   if (typeof window === 'undefined') return undefined;
 
@@ -56,15 +55,6 @@ const createCustomIcon = (isVisited: boolean, visitCount: number) => {
   });
 };
 
-// Component to dynamically recenter map on filter change
-const MapRecenter = ({ center }: { center: [number, number] }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.flyTo(center, map.getZoom(), { duration: 1.2 });
-  }, [center, map]);
-  return null;
-};
-
 export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
   allTemples,
   userVisits,
@@ -72,9 +62,6 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
   selectedStateFilter = 'ALL',
   selectedCategoryFilter = 'ALL',
 }) => {
-  const [activeTemple, setActiveTemple] = useState<Temple | null>(null);
-
-  // Group user visits by temple ID
   const visitsByTempleId = useMemo(() => {
     const map = new Map<string, TempleVisitWithDetails[]>();
     userVisits.forEach((visit) => {
@@ -84,7 +71,6 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
     return map;
   }, [userVisits]);
 
-  // Filter temples based on state and category
   const filteredTemples = useMemo(() => {
     return allTemples.filter((t) => {
       const matchesState = selectedStateFilter === 'ALL' || t.state === selectedStateFilter;
@@ -93,12 +79,10 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
     });
   }, [allTemples, selectedStateFilter, selectedCategoryFilter]);
 
-  // Map center logic (defaults to center of India)
   const defaultCenter: [number, number] = [20.5937, 78.9629];
 
   return (
     <div className="relative w-full h-[600px] md:h-[700px] rounded-3xl overflow-hidden shadow-2xl border border-amber-200/60 dark:border-amber-900/40">
-      
       <MapContainer
         center={defaultCenter}
         zoom={5}
@@ -122,7 +106,6 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
               icon={icon}
               eventHandlers={{
                 click: () => {
-                  setActiveTemple(temple);
                   if (onSelectTemple) onSelectTemple(temple);
                 },
               }}
@@ -153,10 +136,10 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
                         <span className="text-[10px] text-stone-400">{visits[0]?.visitDate}</span>
                       </div>
                       <Link
-                        href={`/visit/${visits[0].id}`}
+                        href={`/temples/${temple.id}`}
                         className="mt-2 w-full py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold flex items-center justify-center gap-1 hover:bg-amber-700 transition-colors"
                       >
-                        View Memory <ChevronRight className="w-3.5 h-3.5" />
+                        View Temple Journey <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
                   ) : (
@@ -180,7 +163,7 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
       {/* Floating Map Legend Overlay */}
       <div className="absolute top-4 left-4 z-20 bg-stone-900/90 backdrop-blur-md border border-amber-500/30 text-white p-3.5 rounded-2xl shadow-xl max-w-xs text-xs">
         <div className="flex items-center gap-2 mb-1.5 font-serif font-bold text-amber-400 text-sm">
-          <Sparkles className="w-4 h-4" /> Spiritual Journey Footprint
+          <Sparkles className="w-4 h-4" /> Sacred Journey Footprint
         </div>
         <div className="flex items-center gap-4 mt-2">
           <div className="flex items-center gap-1.5">
@@ -193,7 +176,6 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
           </div>
         </div>
       </div>
-
     </div>
   );
 };
