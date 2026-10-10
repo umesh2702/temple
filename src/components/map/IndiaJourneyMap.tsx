@@ -55,6 +55,33 @@ const createCustomIcon = (isVisited: boolean, visitCount: number) => {
   });
 };
 
+export const MAP_STYLES = [
+  {
+    id: 'google-maps',
+    name: '🗺️ Google Maps',
+    url: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+    attribution: '&copy; <a href="https://www.google.com/maps">Google Maps</a>',
+  },
+  {
+    id: 'google-terrain',
+    name: '⛰️ Google Terrain',
+    url: 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+    attribution: '&copy; <a href="https://www.google.com/maps">Google Maps</a>',
+  },
+  {
+    id: 'google-satellite',
+    name: '🛰️ Google Satellite',
+    url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+    attribution: '&copy; <a href="https://www.google.com/maps">Google Maps</a>',
+  },
+  {
+    id: 'osm',
+    name: '📍 Standard OSM',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
+];
+
 export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
   allTemples,
   userVisits,
@@ -62,6 +89,8 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
   selectedStateFilter = 'ALL',
   selectedCategoryFilter = 'ALL',
 }) => {
+  const [activeStyle, setActiveStyle] = useState(MAP_STYLES[0]);
+
   const visitsByTempleId = useMemo(() => {
     const map = new Map<string, TempleVisitWithDetails[]>();
     userVisits.forEach((visit) => {
@@ -90,8 +119,9 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
         className="w-full h-full z-10"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          key={activeStyle.id}
+          attribution={activeStyle.attribution}
+          url={activeStyle.url}
         />
 
         {filteredTemples.map((temple) => {
@@ -159,6 +189,23 @@ export const IndiaJourneyMap: React.FC<IndiaJourneyMapProps> = ({
           );
         })}
       </MapContainer>
+
+      {/* Floating Map Style Selector */}
+      <div className="absolute top-4 right-4 z-20 bg-stone-900/90 backdrop-blur-md border border-amber-500/30 p-1.5 rounded-2xl shadow-xl flex items-center gap-1 text-xs">
+        {MAP_STYLES.map((style) => (
+          <button
+            key={style.id}
+            onClick={() => setActiveStyle(style)}
+            className={`px-3 py-1.5 rounded-xl font-medium transition-all ${
+              activeStyle.id === style.id
+                ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                : 'text-stone-300 hover:text-white hover:bg-stone-800/80'
+            }`}
+          >
+            {style.name}
+          </button>
+        ))}
+      </div>
 
       {/* Floating Map Legend Overlay */}
       <div className="absolute top-4 left-4 z-20 bg-stone-900/90 backdrop-blur-md border border-amber-500/30 text-white p-3.5 rounded-2xl shadow-xl max-w-xs text-xs">

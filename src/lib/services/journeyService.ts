@@ -407,3 +407,27 @@ export function computeJourneyStatsFromVisits(visits: TempleVisitWithDetails[]):
     },
   };
 }
+
+// --- ON THIS DAY COMPUTATION ---
+export function computeOnThisDayFromVisits(
+  visits: TempleVisitWithDetails[]
+): { visit: TempleVisitWithDetails; yearsAgo: number } | null {
+  if (!visits || visits.length === 0) return null;
+
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentDate = today.getDate();
+
+  for (const v of visits) {
+    const vDate = new Date(v.visitDate);
+    if (vDate.getMonth() === currentMonth && vDate.getDate() === currentDate) {
+      const yearsAgo = today.getFullYear() - vDate.getFullYear();
+      if (yearsAgo > 0) {
+        return { visit: v, yearsAgo };
+      }
+    }
+  }
+
+  return null;
+}
+

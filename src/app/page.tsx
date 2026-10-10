@@ -7,8 +7,9 @@ import {
   getVisitsService,
   getTemplesService,
   computeJourneyStatsFromVisits,
+  computeOnThisDayFromVisits,
 } from '@/lib/services/journeyService';
-import { getOnThisDayMemory, getUserProfile } from '@/lib/storage/journeyStorage';
+import { getUserProfile } from '@/lib/storage/journeyStorage';
 import { TempleVisitWithDetails, Temple, JourneyStats } from '@/types';
 import { StatsSummary } from '@/components/journey/StatsSummary';
 import { OnThisDayCard } from '@/components/journey/OnThisDayCard';
@@ -48,7 +49,7 @@ export default function DashboardPage() {
       const loadedTemples = await getTemplesService();
       const loadedVisits = await getVisitsService();
       const computedStats = computeJourneyStatsFromVisits(loadedVisits);
-      const otd = getOnThisDayMemory();
+      const otd = computeOnThisDayFromVisits(loadedVisits);
 
       setTemples(loadedTemples);
       setVisits(loadedVisits);
